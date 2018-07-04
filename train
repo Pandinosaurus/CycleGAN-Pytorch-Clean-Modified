@@ -68,23 +68,25 @@ lr_scheduler_G = torch.optim.lr_scheduler.LambdaLR(optimizer_G, lr_lambda=Lambda
 lr_scheduler_D_A = torch.optim.lr_scheduler.LambdaLR(optimizer_D_A, lr_lambda=LambdaLR(opt.n_epochs, opt.epoch, opt.decay_epoch).step)
 lr_scheduler_D_B = torch.optim.lr_scheduler.LambdaLR(optimizer_D_B, lr_lambda=LambdaLR(opt.n_epochs, opt.epoch, opt.decay_epoch).step)
 
-# Inputs & targets memory allocation
+# Inputs & targets memory allocation - fixed [1 x 1] vs [1] issue : python now considers scalar [1] != from singleton [1x1]
+# the fix was to change the tensor definition below thanks to https://github.com/aitorzip/PyTorch-CycleGAN/pull/4/commits/fe7845a16503b721f13602d9914a7ee00a7881ed
 Tensor = torch.cuda.FloatTensor if opt.cuda else torch.Tensor
 input_A = Tensor(opt.batchSize, opt.input_nc, opt.size, opt.size)
 input_B = Tensor(opt.batchSize, opt.output_nc, opt.size, opt.size)
-target_real = Variable(Tensor(opt.batchSize).fill_(1.0), requires_grad=False)
-target_fake = Variable(Tensor(opt.batchSize).fill_(0.0), requires_grad=False)
+target_real = Variable(Tensor(opt.batchSize,1).fill_(1.0), requires_grad=False)
+target_fake = Variable(Tensor(opt.batchSize,1).fill_(0.0), requires_grad=False)
+
 
 fake_A_buffer = ReplayBuffer()
 fake_B_buffer = ReplayBuffer()
 
 # Dataset loader
-transforms_ = [ transforms.Resize(int(opt.size*1.12), Image.BICUBIC), 
+transforms_ = [ transforms.Resize(int(opt.size*1.12), Image.BICUBIC),
                 transforms.RandomCrop(opt.size), 
                 transforms.RandomHorizontalFlip(),
                 transforms.ToTensor(),
                 transforms.Normalize((0.5,0.5,0.5), (0.5,0.5,0.5)) ]
-dataloader = DataLoader(ImageDataset(opt.dataroot, transforms_=transforms_, unaligned=True), 
+dataloader = DataLoader(ImageDataset(opt.dataroot, transforms_=transforms_, unaligned=True),
                         batch_size=opt.batchSize, shuffle=True, num_workers=opt.n_cpu)
 
 # Loss plot
