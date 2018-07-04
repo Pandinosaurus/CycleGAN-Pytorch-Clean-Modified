@@ -45,10 +45,15 @@ If you don't own a GPU remove the --cuda option, although I advise you to get on
 
 You can also view the training progress as well as live output images by running ```python3 -m visdom.server``` in another terminal and opening [http://localhost:8097/](http://localhost:8097/) in your favourite web browser. This should generate training loss progress as shown below (default params, horse2zebra dataset):
 
+The Generator loss is the sum of GAN loss, identity loss and cycle loss.
 ![Generator loss](https://github.com/ai-tor/PyTorch-CycleGAN/raw/master/output/loss_G.png)
+The Discriminator loss is the sum of D_A and D_B losses.
 ![Discriminator loss](https://github.com/ai-tor/PyTorch-CycleGAN/raw/master/output/loss_D.png)
+The GAN loss tells us how much our generator is able to fool the discriminator. The displayed curve is the sum of GAN_A2B and GAN_B2A.
 ![Generator GAN loss](https://github.com/ai-tor/PyTorch-CycleGAN/raw/master/output/loss_G_GAN.png)
+The Identity loss tells us how much our generator from domain A (resp. B) to domain B (resp. A) is able to preserve a domain B (resp. A) input. The displayed curve is the sum of identity A and identity B losses.
 ![Generator identity loss](https://github.com/ai-tor/PyTorch-CycleGAN/raw/master/output/loss_G_identity.png)
+The cycle loss compares input of cycle GAN from domain A (resp. B), and the output of the cycle A2B2A(A) (resp. B2A2B(B)). The displayed curve is the sum of the A2B2A and B2A2B cycle losses.
 ![Generator cycle loss](https://github.com/ai-tor/PyTorch-CycleGAN/raw/master/output/loss_G_cycle.png)
 
 ## Testing
