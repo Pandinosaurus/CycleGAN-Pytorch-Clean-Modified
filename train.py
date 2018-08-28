@@ -17,6 +17,12 @@ from utils import Logger
 from utils import weights_init_normal
 from datasets import ImageDataset
 
+# Crude way to restrict the number of visible GPUs
+import os
+os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
+os.environ["CUDA_VISIBLE_DEVICES"]="1,2"
+
+# Parser
 parser = argparse.ArgumentParser()
 parser.add_argument('--epoch', type=int, default=0, help='starting epoch')
 parser.add_argument('--n_epochs', type=int, default=200, help='number of epochs of training')
