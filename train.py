@@ -8,7 +8,7 @@ from torch.utils.data import DataLoader
 from torch.autograd import Variable
 from PIL import Image
 import torch
-
+import torch.nn as nn
 from models import Generator
 from models import Discriminator
 from utils import ReplayBuffer
@@ -48,12 +48,30 @@ netG_B2A = Generator(opt.output_nc, opt.input_nc)
 netD_A = Discriminator(opt.input_nc)
 netD_B = Discriminator(opt.output_nc)
 
+# On GPU if cuda is available
 if opt.cuda:
     netG_A2B.cuda()
     netG_B2A.cuda()
     netD_A.cuda()
     netD_B.cuda()
 
+# Parallelize processing on multiple GPU if possible
+# Parallelization is made on the batch dimension
+if torch.cuda.device_count() > 1:
+    print("Let's use", torch.cuda.device_count(), "GPUs!")
+    # dim = 0 [30, xxx] -> [10, ...], [10, ...], [10, ...] on 3 GPUs
+    netG_A2B = nn.DataParallel(netG_A2B)
+    netG_B2A = nn.DataParallel(netG_B2A)
+    netD_A = nn.DataParallel(netD_A)
+    netD_B = nn.DataParallel(netD_B)
+    
+# Create a device for aggregating multi-gpu processing
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+netG_A2B.to(device)
+netG_B2A.to(device)
+netD_A.to(device)
+netD_B.to(device)
+    
 netG_A2B.apply(weights_init_normal)
 netG_B2A.apply(weights_init_normal)
 netD_A.apply(weights_init_normal)
