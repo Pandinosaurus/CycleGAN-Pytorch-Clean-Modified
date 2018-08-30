@@ -41,8 +41,7 @@ print(opt)
 if torch.cuda.is_available() and not opt.cuda:
     print("WARNING: You have a CUDA device, so you should probably run with --cuda")
 
-###### Definition of variables ######
-# Networks
+###### Definition of variables ####### Networks
 netG_A2B = Generator(opt.input_nc, opt.output_nc)
 netG_B2A = Generator(opt.output_nc, opt.input_nc)
 netD_A = Discriminator(opt.input_nc)
@@ -77,7 +76,7 @@ netG_B2A.apply(weights_init_normal)
 netD_A.apply(weights_init_normal)
 netD_B.apply(weights_init_normal)
 
-# Lossess
+# Losses
 criterion_GAN = torch.nn.MSELoss()
 criterion_cycle = torch.nn.L1Loss()
 criterion_identity = torch.nn.L1Loss()
@@ -99,7 +98,6 @@ input_A = Tensor(opt.batchSize, opt.input_nc, opt.size, opt.size)
 input_B = Tensor(opt.batchSize, opt.output_nc, opt.size, opt.size)
 target_real = Variable(Tensor(opt.batchSize,1).fill_(1.0), requires_grad=False)
 target_fake = Variable(Tensor(opt.batchSize,1).fill_(0.0), requires_grad=False)
-
 
 fake_A_buffer = ReplayBuffer()
 fake_B_buffer = ReplayBuffer()
