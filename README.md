@@ -35,7 +35,7 @@ Alternatively you can build your own dataset by setting up the following directo
     
 ### 2. Train!
 ```
-./train --dataroot datasets/<dataset_name>/ --cuda
+python3 train.py --dataroot datasets/<dataset_name>/ --cuda
 ```
 This command will start a training session using the images under the *dataroot/train* directory with the hyperparameters that showed best results according to CycleGAN authors. You are free to change those hyperparameters, see ```./train --help``` for a description of those.
 
@@ -58,7 +58,7 @@ The cycle loss compares input of cycle GAN from domain A (resp. B), and the outp
 
 ## Testing
 ```
-./test --dataroot datasets/<dataset_name>/ --cuda
+python3 test.py --dataroot datasets/<dataset_name>/ --cuda
 ```
 This command will take the images under the *dataroot/test* directory, run them through the generators and save the output under the *output/A* and *output/B* directories. As with train, some parameters like the weights to load, can be tweaked, see ```./test --help``` for more information.
 
