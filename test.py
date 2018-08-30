@@ -41,6 +41,7 @@ if opt.cuda:
 # Load state dicts saved with DataParallel
 state_dict_netG_A2B = torch.load(opt.generator_A2B)
 state_dict_netG_B2A = torch.load(opt.generator_B2A)
+
 # Create new OrderedDict that does not contain 'module.' (added by DataParallel)
 from collections import OrderedDict
 new_state_dict_netG_A2B = OrderedDict()
@@ -55,6 +56,7 @@ for k,v in state_dict_netG_B2A.items():
     if k[:7] == 'module.':        
         name = k[7:] #remove 'module.'
     new_state_dict_netG_B2A[name] = v
+    
 # Load params
 netG_A2B.load_state_dict(new_state_dict_netG_A2B)
 netG_B2A.load_state_dict(new_state_dict_netG_B2A)
